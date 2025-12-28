@@ -67,7 +67,14 @@ export async function POST(request) {
           });
 
           results.priceChanges++;
+        }
+        */
 
+        // Alert logic enabled for testing (compares scraped price with database price)
+        if (oldPrice !== newPrice) {
+          results.priceChanges++;
+          
+          // Send alert if scraped price is lower than database price (price dropped)
           if (newPrice < oldPrice) {
             const {
               data: { user },
@@ -87,7 +94,6 @@ export async function POST(request) {
             }
           }
         }
-        */
 
         // Log what would have been updated (for testing purposes)
         console.log(`Would update product ${product.id}: ${oldPrice} -> ${newPrice}`);
