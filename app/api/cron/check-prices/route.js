@@ -46,6 +46,8 @@ export async function POST(request) {
         const newPrice = parseFloat(productData.currentPrice);
         const oldPrice = parseFloat(product.current_price);
 
+        // TEMPORARILY DISABLED FOR TESTING - Uncomment below to re-enable auto-updates
+        /*
         await supabase
           .from("products")
           .update({
@@ -85,7 +87,10 @@ export async function POST(request) {
             }
           }
         }
+        */
 
+        // Log what would have been updated (for testing purposes)
+        console.log(`Would update product ${product.id}: ${oldPrice} -> ${newPrice}`);
         results.updated++;
       } catch (error) {
         console.error(`Error processing product ${product.id}:`, error);
