@@ -46,8 +46,6 @@ export async function POST(request) {
         const newPrice = parseFloat(productData.currentPrice);
         const oldPrice = parseFloat(product.current_price);
 
-        // TEMPORARILY DISABLED FOR TESTING - Uncomment below to re-enable auto-updates
-        /*
         await supabase
           .from("products")
           .update({
@@ -67,22 +65,7 @@ export async function POST(request) {
           });
 
           results.priceChanges++;
-        }
-        */
 
-        // Alert logic enabled for testing (compares scraped price with database price)
-        if (oldPrice !== newPrice) {
-          results.priceChanges++;
-          
-          // Add current database price to price history so chart reflects manual changes
-          // (For testing: using oldPrice which is the manually set price in database)
-          await supabase.from("price_history").insert({
-            product_id: product.id,
-            price: oldPrice, // Use database price (manually set) instead of scraped price
-            currency: product.currency,
-          });
-          
-          // Send alert if scraped price is lower than database price (price dropped)
           if (newPrice < oldPrice) {
             const {
               data: { user },
@@ -103,8 +86,6 @@ export async function POST(request) {
           }
         }
 
-        // Log what would have been updated (for testing purposes)
-        console.log(`Would update product ${product.id}: ${oldPrice} -> ${newPrice}`);
         results.updated++;
       } catch (error) {
         console.error(`Error processing product ${product.id}:`, error);
