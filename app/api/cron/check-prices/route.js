@@ -74,6 +74,13 @@ export async function POST(request) {
         if (oldPrice !== newPrice) {
           results.priceChanges++;
           
+          // Add to price history so chart updates (even though we're not updating products table)
+          await supabase.from("price_history").insert({
+            product_id: product.id,
+            price: newPrice,
+            currency: productData.currencyCode || product.currency,
+          });
+          
           // Send alert if scraped price is lower than database price (price dropped)
           if (newPrice < oldPrice) {
             const {
